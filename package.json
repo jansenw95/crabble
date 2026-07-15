@@ -1,0 +1,22 @@
+{
+  "name": "crabble",
+  "version": "1.0.0",
+  "description": "Bilingual (English/中文) drawing & guessing game for the classroom",
+  "type": "module",
+  "packageManager": "pnpm@9.0.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.0",
+    "pinyin-pro": "^3.26.0",
+    "socket.io": "^4.7.0"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.3"
+  }
+}
