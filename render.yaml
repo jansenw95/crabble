@@ -3,6 +3,6 @@ services:
     name: crabble
     runtime: node
     plan: free
-    buildCommand: corepack enable && pnpm install --frozen-lockfile
+    buildCommand: npm install -g pnpm@9 && pnpm install --frozen-lockfile
     startCommand: node server/index.js
     healthCheckPath: /
