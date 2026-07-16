@@ -64,6 +64,17 @@ export function renderTimer(endsAt) {
   timerEl.classList.toggle('low', secs <= 10);
 }
 
+function hintSlots(mask, groupCls) {
+  const slots = mask
+    .map((ch) => {
+      if (ch === ' ') return '<span class="slot space"></span>';
+      const hidden = ch === '_' || ch === '□';
+      return `<span class="slot${hidden ? ' hid' : ''}">${hidden ? '&nbsp;' : esc(ch)}</span>`;
+    })
+    .join('');
+  return `<span class="hint-group ${groupCls}">${slots}</span>`;
+}
+
 // Guessers see masks; the drawer sees the full word + pinyin.
 export function renderHint(state) {
   if (state.phase !== 'DRAWING') {
@@ -77,9 +88,10 @@ export function renderHint(state) {
     return;
   }
   if (state.hint) {
-    const en = state.hint.en.join(' ');
-    const zh = state.hint.zh.join(' ');
-    hintBar.innerHTML = `${esc(en)} &nbsp;·&nbsp; ${esc(zh)}`;
+    hintBar.innerHTML =
+      hintSlots(state.hint.en, 'hint-en') +
+      hintSlots(state.hint.py || [], 'hint-py') +
+      hintSlots(state.hint.zh, 'hint-zh');
   }
 }
 

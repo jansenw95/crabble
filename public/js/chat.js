@@ -28,6 +28,7 @@ const SYSTEM_TEXT = {
   rejoined: (p) => `🔄 ${esc(p.name)} is back! 回来了!`,
   kicked: (p) => `${esc(p.name)} was removed 被移除了`,
   drawerLeft: () => `The artist left 画画的人离开了 😢`,
+  settings: (p) => `⚙️ Settings updated 设置已更新: ${p.drawSeconds}s · ${p.rounds} rounds 轮`,
 };
 
 export function addChat(msg) {

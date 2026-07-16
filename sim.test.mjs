@@ -71,6 +71,15 @@ const { word } = await wordP;
 log(`  word: ${word.en} / ${word.zh} (${word.pinyin})`);
 assert(drawing.hint.en.every((c) => c === '_' || !/[a-z]/i.test(c)), 'english hint fully masked');
 assert(drawing.hint.zh.every((c) => c === '□'), 'chinese hint fully masked');
+assert(Array.isArray(drawing.hint.py) && drawing.hint.py.length === [...word.pinyin].length, 'pinyin hint mask present');
+
+// host changes settings mid-game
+const settingsP = waitFor(kid1, 'settings:changed');
+host.emit('settings:update', { drawSeconds: 60, rounds: 1 });
+const sc = await settingsP;
+assert(sc.drawSeconds === 60 && sc.totalRounds === 1, `settings changed mid-game: ${JSON.stringify(sc)}`);
+kid2.emit('settings:update', { drawSeconds: 120, rounds: 5 }); // non-host: ignored
+await new Promise((r) => setTimeout(r, 200));
 
 // --- drawing relay ---
 log('\n== drawing sync ==');

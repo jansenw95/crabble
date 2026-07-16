@@ -220,15 +220,88 @@ input:focus, select:focus, textarea:focus {
 
 .hint-bar {
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
   font-size: 19px;
-  letter-spacing: 1px;
-  overflow: hidden;
   white-space: nowrap;
 }
 .hint-bar .py { color: #7d8797; font-size: 15px; }
 
+.hint-group {
+  display: inline-flex;
+  gap: 3px;
+  align-items: flex-end;
+  position: relative;
+  margin-top: 9px;
+}
+.hint-group::before {
+  font-size: 9px;
+  font-weight: bold;
+  color: #9aa3af;
+  position: absolute;
+  top: -11px;
+  left: 0;
+  letter-spacing: 0;
+  font-style: normal;
+}
+.hint-en::before { content: "ENGLISH"; }
+.hint-py::before { content: "PĪNYĪN"; color: #3aa8a0; }
+.hint-zh::before { content: "汉字"; }
+
+.hint-en .slot, .hint-py .slot {
+  display: inline-block;
+  min-width: 15px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  font-weight: bold;
+}
+.hint-en .slot.hid { border-bottom: 3px solid var(--ink); }
+.hint-py .slot {
+  min-width: 12px;
+  height: 23px;
+  line-height: 23px;
+  font-size: 15px;
+  font-style: italic;
+  color: #0b8f86;
+}
+.hint-py .slot.hid { border-bottom: 2px dotted #3aa8a0; }
+.slot.space { min-width: 10px; border: none !important; }
+
+.hint-zh .slot {
+  display: inline-block;
+  width: 27px;
+  height: 27px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 18px;
+  border: 2px solid var(--secondary);
+  border-radius: 7px;
+  background: #e8f8f6;
+}
+.hint-zh .slot.hid {
+  border: 2px dashed #b8c0cc;
+  background: #f6f8fa;
+}
+
 #brand { color: var(--primary); white-space: nowrap; }
+
+.settings-pop {
+  position: absolute;
+  top: 68px;
+  right: 60px;
+  z-index: 20;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  width: 240px;
+}
+.settings-pop h3 { margin-bottom: 6px; }
+.settings-pop label { display: block; font-weight: bold; margin: 10px 0 4px; }
+.settings-pop .btn { width: 100%; margin-top: 10px; }
 
 /* players panel */
 #players-panel {

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { prepareWord, checkGuess } from './match.js';
-import { createHint, revealEnglishLetter, revealChineseChar } from './hints.js';
+import { createHint, revealSlot, countLetters } from './hints.js';
 import { buildPool, pickChoices, markUsed } from './words.js';
 
 const CHOOSE_MS = 15_000;
@@ -280,22 +280,47 @@ export class Room {
 
   scheduleHints(drawMs) {
     for (const t of this.hintTimers) clearTimeout(t);
+    const word = this.currentWord;
+    const enLetters = countLetters(word.en);
+    const pyLetters = countLetters(word.pinyin || '');
+    const zhChars = [...word.zh].length;
+
+    const reveal = (fns) => () => {
+      if (this.phase !== 'DRAWING') return;
+      let changed = false;
+      for (const fn of fns) changed = fn() || changed;
+      if (changed) this.broadcast('hint:update', { hint: this.hint });
+    };
+
     this.hintTimers = [
-      setTimeout(() => {
-        if (this.phase !== 'DRAWING') return;
-        if (revealEnglishLetter(this.hint, this.currentWord)) {
-          this.broadcast('hint:update', { hint: this.hint });
-        }
-      }, drawMs * 0.5),
-      setTimeout(() => {
-        if (this.phase !== 'DRAWING') return;
-        let changed = false;
-        const letterCount = [...this.currentWord.en].filter((c) => /[a-zA-Z]/.test(c)).length;
-        if (letterCount >= 4) changed = revealEnglishLetter(this.hint, this.currentWord) || changed;
-        changed = revealChineseChar(this.hint, this.currentWord) || changed;
-        if (changed) this.broadcast('hint:update', { hint: this.hint });
-      }, drawMs * 0.75),
+      setTimeout(reveal([
+        () => revealSlot(this.hint, 'en', word.en),
+      ]), drawMs * 0.4),
+      setTimeout(reveal([
+        () => revealSlot(this.hint, 'py', word.pinyin),
+        () => enLetters >= 6 && revealSlot(this.hint, 'en', word.en),
+      ]), drawMs * 0.6),
+      setTimeout(reveal([
+        () => enLetters >= 4 && revealSlot(this.hint, 'en', word.en),
+        () => pyLetters >= 4 && revealSlot(this.hint, 'py', word.pinyin),
+        // Revealing a character of a 1-2 char word gives it away.
+        () => zhChars >= 3 && revealSlot(this.hint, 'zh', word.zh),
+      ]), drawMs * 0.8),
     ];
+  }
+
+  updateSettings(byId, payload) {
+    if (byId !== this.hostId) return;
+    this.settings.drawSeconds = clampInt(payload?.drawSeconds, 30, 180, this.settings.drawSeconds);
+    this.settings.rounds = clampInt(payload?.rounds, 1, 10, this.settings.rounds);
+    this.broadcast('settings:changed', {
+      drawSeconds: this.settings.drawSeconds,
+      totalRounds: this.settings.rounds,
+    });
+    this.system('settings', {
+      drawSeconds: this.settings.drawSeconds,
+      rounds: this.settings.rounds,
+    });
   }
 
   handleGuess(playerId, rawText) {

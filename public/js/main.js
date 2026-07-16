@@ -57,6 +57,9 @@ function renderAll() {
   canvas.setEnabled(drawing);
   $('toolbar').classList.toggle('hidden', !drawing);
   $('guess-form').classList.toggle('hidden', isDrawer());
+  const isHost = state.you === state.hostId;
+  $('btn-settings').classList.toggle('hidden', !isHost);
+  if (!isHost) $('settings-pop').classList.add('hidden');
 }
 
 // ─────────── join screen ───────────
@@ -234,6 +237,7 @@ function applySnapshot(snap) {
     endsAt: snap.endsAt,
     round: snap.round,
     totalRounds: snap.totalRounds,
+    drawSeconds: snap.drawSeconds,
   });
   canvas.setStrokes(snap.strokes);
   ui.hideOverlay();
@@ -411,6 +415,33 @@ $('tool-eraser').onclick = () => {
 };
 $('tool-undo').onclick = () => canvas.undoLocal();
 $('tool-clear').onclick = () => canvas.clearLocal();
+
+// ─────────── mid-game settings (host) ───────────
+
+$('btn-settings').onclick = () => {
+  const pop = $('settings-pop');
+  if (pop.classList.contains('hidden')) {
+    $('game-drawtime').value = String(state.drawSeconds || 80);
+    $('game-rounds').value = String(state.totalRounds || 3);
+    pop.classList.remove('hidden');
+  } else {
+    pop.classList.add('hidden');
+  }
+};
+
+$('btn-apply-settings').onclick = () => {
+  socket.emit('settings:update', {
+    drawSeconds: $('game-drawtime').value,
+    rounds: $('game-rounds').value,
+  });
+  $('settings-pop').classList.add('hidden');
+};
+
+socket.on('settings:changed', ({ drawSeconds, totalRounds }) => {
+  state.drawSeconds = drawSeconds;
+  state.totalRounds = totalRounds;
+  ui.renderRound(state.round, state.totalRounds);
+});
 
 // ─────────── timer tick ───────────
 

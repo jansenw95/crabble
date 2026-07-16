@@ -10,7 +10,9 @@ Every word is a pair like **cat · 猫**. During a round, any of these count as 
 - the Chinese word — `猫`
 - pinyin, with or without tones — `mao`, `māo`, or `mao1` (so kids without a Chinese keyboard can still answer in Chinese)
 
-Hints appear as the timer runs down: blanks for the English word (`_ _ _`) and one box per Chinese character (`□`).
+The hint bar shows three masks — English blanks, pinyin blanks (dotted, teal), and one box per Chinese character. As the timer runs down (at 40%, 60%, and 80% of the round), letters and characters are revealed automatically so nobody stays stuck.
+
+The host can change the draw time and number of rounds mid-game via the ⚙️ button in the header; changes apply from the next turn.
 
 ## Run it locally
 

@@ -1,32 +1,31 @@
-// Bilingual hint masks. English letters mask to "_" (spaces/hyphens stay visible);
-// Chinese characters mask to "□".
+// Bilingual hint masks. Hidden slots are '_' (English/pinyin letters) or '□'
+// (Chinese characters); spaces and punctuation stay visible. The client turns
+// these into styled blanks/boxes.
+
+// Covers a-z plus the accented pinyin tone letters (ā, ǎ, ǚ, ...).
+const LETTER = /[a-zA-ZÀ-ɏ]/;
 
 export function createHint(word) {
   return {
-    en: [...word.en].map((ch) => (/[a-zA-Z]/.test(ch) ? '_' : ch)),
+    en: [...word.en].map((ch) => (LETTER.test(ch) ? '_' : ch)),
+    py: [...(word.pinyin || '')].map((ch) => (LETTER.test(ch) ? '_' : ch)),
     zh: [...word.zh].map(() => '□'),
   };
 }
 
-function hiddenIndices(mask, placeholder) {
-  return mask.map((ch, i) => (ch === placeholder ? i : -1)).filter((i) => i >= 0);
+export function countLetters(str) {
+  return [...str].filter((ch) => LETTER.test(ch)).length;
 }
 
-export function revealEnglishLetter(hint, word) {
-  const hidden = hiddenIndices(hint.en, '_');
-  // Never reveal the last hidden letter.
+// Reveals one random hidden slot of hint[key] from the source string.
+// Never reveals the last hidden slot.
+export function revealSlot(hint, key, source) {
+  const mask = hint[key];
+  const hidden = mask
+    .map((ch, i) => (ch === '_' || ch === '□' ? i : -1))
+    .filter((i) => i >= 0);
   if (hidden.length <= 1) return false;
   const i = hidden[Math.floor(Math.random() * hidden.length)];
-  hint.en[i] = [...word.en][i];
-  return true;
-}
-
-export function revealChineseChar(hint, word) {
-  // Revealing a character of a 1-2 char word gives it away.
-  if ([...word.zh].length < 3) return false;
-  const hidden = hiddenIndices(hint.zh, '□');
-  if (hidden.length <= 1) return false;
-  const i = hidden[Math.floor(Math.random() * hidden.length)];
-  hint.zh[i] = [...word.zh][i];
+  mask[i] = [...source][i];
   return true;
 }
