@@ -107,6 +107,8 @@ io.on('connection', (socket) => {
 });
 
 const port = process.env.PORT || 3000;
-httpServer.listen(port, () => {
-  console.log(`crabble 🦀 listening on http://localhost:${port} (max ${MAX_PLAYERS} players/room)`);
+// Bind 0.0.0.0 explicitly: Render's port scan doesn't always detect
+// Node's default IPv6 (::) binding, causing deploys to time out.
+httpServer.listen(port, '0.0.0.0', () => {
+  console.log(`crabble 🦀 listening on 0.0.0.0:${port} (max ${MAX_PLAYERS} players/room)`);
 });
