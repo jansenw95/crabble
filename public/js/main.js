@@ -256,6 +256,8 @@ socket.on('player:update', ({ players, hostId }) => {
   state.players = players;
   if (hostId !== undefined) state.hostId = hostId;
   renderAll();
+  // If the host left the podium, a newly-promoted host needs the return button.
+  if (state.phase === 'GAME_END') renderGameEnd();
 });
 
 socket.on('phase:lobby', ({ players, hostId }) => {
@@ -320,11 +322,19 @@ socket.on('phase:turnEnd', (payload) => {
   renderAll();
 });
 
-socket.on('phase:gameEnd', ({ finalScores, endsAt }) => {
+function renderGameEnd() {
+  ui.showGameEnd(state.finalScores || [], state.you === state.hostId, () =>
+    socket.emit('room:return')
+  );
+}
+
+socket.on('phase:gameEnd', ({ finalScores, hostId }) => {
   state.phase = 'GAME_END';
-  state.endsAt = endsAt;
+  state.endsAt = 0;
   state.drawerId = null;
-  ui.showGameEnd(finalScores);
+  state.finalScores = finalScores;
+  if (hostId !== undefined) state.hostId = hostId;
+  renderGameEnd();
   renderAll();
 });
 
