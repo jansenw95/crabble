@@ -5,7 +5,6 @@ import { buildPool, pickChoices, markUsed } from './words.js';
 
 const CHOOSE_MS = 15_000;
 const TURN_END_MS = 5_000;
-const GAME_END_MS = 30_000;
 export const MAX_PLAYERS = 16;
 
 export class Room {
@@ -434,11 +433,17 @@ export class Room {
     this.clearTimers();
     this.phase = 'GAME_END';
     this.drawerId = null;
+    this.endsAt = 0;
     const finalScores = [...this.players.values()]
       .map((p) => ({ id: p.id, name: p.name, avatar: p.avatar, score: p.score }))
       .sort((a, b) => b.score - a.score);
-    this.setPhaseTimer(GAME_END_MS, () => this.resetToLobby());
-    this.broadcast('phase:gameEnd', { finalScores, endsAt: this.endsAt });
+    // No auto-timer: the host decides when to go back to the room.
+    this.broadcast('phase:gameEnd', { finalScores, hostId: this.hostId });
+  }
+
+  returnToLobby(byId) {
+    if (byId !== this.hostId || this.phase !== 'GAME_END') return;
+    this.resetToLobby();
   }
 
   resetToLobby() {

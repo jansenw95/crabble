@@ -156,7 +156,7 @@ export function showTurnEnd(payload, players) {
   showOverlay(`<h2>${reasonText}</h2>${word}${deltas}`);
 }
 
-export function showGameEnd(finalScores) {
+export function showGameEnd(finalScores, isHost, onReturn) {
   const top = finalScores.slice(0, 3);
   const order = [1, 0, 2]; // second, first, third
   const cls = ['first', 'second', 'third'];
@@ -178,9 +178,15 @@ export function showGameEnd(finalScores) {
     .map((p) => `<div class="delta-row"><span>${esc(p.avatar)} ${esc(p.name)}</span><span>${p.score}</span></div>`)
     .join('');
 
-  showOverlay(`
+  const footer = isHost
+    ? `<button id="btn-return-room" class="btn btn-primary btn-big">Back to the room 返回房间 🏠</button>`
+    : `<p class="hint-text center">Waiting for the host to go back… 等待房主返回房间…</p>`;
+
+  const card = showOverlay(`
     <h2>🏆 Winner! 冠军!</h2>
     <div class="podium">${spots}</div>
     ${rest ? `<div class="delta-list">${rest}</div>` : ''}
-    <p class="hint-text center">Back to the room soon… 马上回到房间…</p>`);
+    ${footer}`);
+
+  if (isHost) card.querySelector('#btn-return-room').onclick = onReturn;
 }

@@ -94,6 +94,7 @@ io.on('connection', (socket) => {
   socket.on('guess', (payload) => room?.handleGuess(playerId, payload?.text));
   socket.on('room:kick', (payload) => room?.kick(playerId, payload?.playerId));
   socket.on('settings:update', (payload) => room?.updateSettings(playerId, payload));
+  socket.on('room:return', () => room?.returnToLobby(playerId));
 
   for (const event of ['draw:start', 'draw:points', 'draw:end', 'draw:undo', 'draw:clear']) {
     socket.on(event, (payload) => room?.handleDraw(playerId, event, payload, socket));

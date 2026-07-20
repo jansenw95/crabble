@@ -1,6 +1,6 @@
 # crabble 🦀
 
-A bilingual (English / 中文) drawing-and-guessing game for the classroom — like skribbl.io, but every word is an English/Chinese pair and **either language counts as a correct guess**. Built for up to 16 players on 11-inch Chromebooks.
+A bilingual (English / 中文) drawing-and-guessing game for the classroom — like skribbl.io, but every word is an English/Chinese pair and **either language counts as a correct guess**. Built for up to 16 players, and the layout works on 11-inch Chromebooks, tablets, and phones (it reflows to a single column on small screens).
 
 ## How the bilingual guessing works
 
@@ -13,6 +13,8 @@ Every word is a pair like **cat · 猫**. During a round, any of these count as 
 The hint bar shows three masks — English blanks, pinyin blanks (dotted, teal), and one box per Chinese character. As the timer runs down (at 40%, 60%, and 80% of the round), letters and characters are revealed automatically so nobody stays stuck.
 
 The host can change the draw time and number of rounds mid-game via the ⚙️ button in the header; changes apply from the next turn.
+
+When a game ends, the podium stays up until the **host** clicks **Back to the room 返回房间** — it no longer returns on a timer, so there's time to celebrate the winners.
 
 ## Run it locally
 
@@ -27,7 +29,7 @@ Open the page, enter a name, click **Create a room 创建房间**, then share th
 
 When creating a room you can:
 
-- pick from 8 built-in categories (~200 kid-friendly word pairs), and/or
+- pick from 14 built-in categories (~350 word pairs, ranging from easy to harder — the "(harder)", Science & Space, Around the World, and Sports & Hobbies sets step up the difficulty), and/or
 - paste your own list, one word per line:
 
   ```
