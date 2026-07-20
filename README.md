@@ -29,7 +29,7 @@ Open the page, enter a name, click **Create a room 创建房间**, then share th
 
 When creating a room you can:
 
-- pick from 14 built-in categories (~350 word pairs, ranging from easy to harder — the "(harder)", Science & Space, Around the World, and Sports & Hobbies sets step up the difficulty), and/or
+- use the built-in **Word Bank** (~3,670 word pairs, adapted from the [Skribblio-Word-Bank](https://github.com/wlauyeung/Skribblio-Word-Bank) English list with Chinese translations and auto-generated pinyin added), and/or
 - paste your own list, one word per line:
 
   ```
